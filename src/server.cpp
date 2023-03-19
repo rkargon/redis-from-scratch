@@ -11,18 +11,6 @@
 #include "server.h"
 #include "util.h"
 
-void handle_client_conn(const int connfd) {
-  char rbuf[64] = {};
-  ssize_t n = read(connfd, rbuf, sizeof(rbuf) - 1);
-  if (n < 0) {
-    std::cerr << "read() error" << std::endl;
-    return;
-  }
-  std::cout << "Client says: " << rbuf << std::endl;
-  char wbuf[] = "world";
-  write(connfd, wbuf, std::strlen(wbuf));
-}
-
 void run_server() {
   std::cout << "Running server..." << std::endl;
   int fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -52,12 +40,33 @@ void run_server() {
     if (connfd < 0) {
       continue;  // error
     }
-    handle_client_conn(connfd);
+
+    while (true) {
+      std::int32_t err = handle_client_single_request(connfd);
+      if (err) {
+        break;
+      }
+    }
+
     close(connfd);
   }
 }
 
-int main(int argc, char **argv) {
+std::int32_t handle_client_single_request(const file_descriptor_t connfd) {
+  char rbuf[K_BUFF_SIZE];
+  if (errno_t err = read_request(connfd, rbuf, K_BUFF_SIZE)) {
+    std::cerr << "read() error." << std::endl;
+    return err;
+  }
+
+  // do something
+  std::cout << "client says:" << &rbuf[4] << std::endl;
+
+  // reply using the same protocol
+  return write_request(connfd, "world");
+}
+
+int main() {
   run_server();
   return 0;
 }

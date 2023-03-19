@@ -1,3 +1,5 @@
+#include "client.h"
+
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -11,7 +13,7 @@
 
 void run_client() {
   std::cout << "Running client..." << std::endl;
-  int fd = socket(AF_INET, SOCK_STREAM, 0);
+  file_descriptor_t fd = socket(AF_INET, SOCK_STREAM, 0);
   if (fd < 0) {
     die("socket()");
   }
@@ -24,19 +26,26 @@ void run_client() {
     die("connect");
   }
 
-  char msg[] = "hello";
-  write(fd, msg, strlen(msg));
+  errno_t err = query(fd, "ouch!");
 
-  char rbuf[64] = {};
-  ssize_t n = read(fd, rbuf, sizeof(rbuf) - 1);
-  if (n < 0) {
-    die("read");
-  }
-  std::cout << "Server sez: " << rbuf << std::endl;
   close(fd);
 }
 
-int main(int argc, char **argv) {
+errno_t query(file_descriptor_t fd, std::string text) {
+  if (errno_t err = write_request(fd, text)) {
+    std::cerr << "write() error" << std::endl;
+    return err;
+  }
+
+  char rbuf[K_BUFF_SIZE];
+  if (errno_t err = read_request(fd, rbuf, K_BUFF_SIZE)) {
+    return err;
+  }
+  std::cout << "Server sez: " << rbuf << std::endl;
+  return 0;
+}
+
+int main(void) {
   run_client();
   return 0;
 }

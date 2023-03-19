@@ -1,2 +1,7 @@
+# pragma once
+
+#include <cstdint>
+#include <cstdio>
+
 void run_server();
-void handle_client_conn(const int connfd);
+std::int32_t handle_client_single_request(const int connfd);
