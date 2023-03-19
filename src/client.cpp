@@ -37,6 +37,6 @@ void run_client() {
 }
 
 int main(int argc, char **argv) {
-  run_server();
+  run_client();
   return 0;
 }
