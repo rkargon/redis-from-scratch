@@ -21,6 +21,7 @@ errno_t read_full(file_descriptor_t fd, char *buf, std::size_t n) {
     n -= rv;
     buf += rv;
   }
+
   return 0;
 }
 

@@ -26,12 +26,19 @@ void run_client() {
     die("connect");
   }
 
-  errno_t err = query(fd, "ouch!");
+  for (int i = 0; i < 3; ++i) {
+    if(errno_t err = query(fd, "ouch!")){
+      break;
+    }
+    
+  }
 
   close(fd);
 }
 
 errno_t query(file_descriptor_t fd, std::string text) {
+  std::cout << "SEND: " << text << std::endl;
+
   if (errno_t err = write_request(fd, text)) {
     std::cerr << "write() error" << std::endl;
     return err;
@@ -41,7 +48,7 @@ errno_t query(file_descriptor_t fd, std::string text) {
   if (errno_t err = read_request(fd, rbuf, K_BUFF_SIZE)) {
     return err;
   }
-  std::cout << "Server sez: " << rbuf << std::endl;
+  std::cout << "RECV: " << (rbuf + 4) << std::endl;
   return 0;
 }
 

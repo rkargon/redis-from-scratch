@@ -59,9 +59,10 @@ std::int32_t handle_client_single_request(const file_descriptor_t connfd) {
   }
 
   // do something
-  std::cout << "client says:" << &rbuf[4] << std::endl;
+  std::cout << "RECV: " << &rbuf[4] << std::endl;
 
   // reply using the same protocol
+  std::cout << "SEND: " << "world" << std::endl;
   return write_request(connfd, "world");
 }
 
