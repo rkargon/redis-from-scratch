@@ -1,4 +1,4 @@
-#include "server.h"
+#include "server.hpp"
 
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -8,8 +8,7 @@
 #include <cstring>
 #include <iostream>
 
-#include "server.h"
-#include "util.h"
+#include "util.hpp"
 
 void run_server() {
   std::cout << "Running server..." << std::endl;
