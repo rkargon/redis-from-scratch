@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include <cstring>
+#include <stdexcept>
 #include <iostream>
 
 #include "util.hpp"
@@ -21,7 +22,7 @@ void run_server() {
   addr.sin_port = ntohs(1234);
   addr.sin_addr.s_addr = ntohl(0);  // wildcard address 0.0.0.0
 
-  int rv = bind(fd, (const sockaddr *)&addr, sizeof(addr));
+  int rv = bind(fd, (const sockaddr*)&addr, sizeof(addr));
   if (rv) {
     die("bind()");
   }
@@ -35,7 +36,7 @@ void run_server() {
     // accept
     struct sockaddr_in client_addr = {};
     socklen_t socklen = sizeof(client_addr);
-    int connfd = accept(fd, (struct sockaddr *)&client_addr, &socklen);
+    int connfd = accept(fd, (struct sockaddr*)&client_addr, &socklen);
     if (connfd < 0) {
       continue;  // error
     }
@@ -62,7 +63,8 @@ std::int32_t handle_client_single_request(const file_descriptor_t connfd) {
   std::cout << "RECV: " << &rbuf[4] << std::endl;
 
   // reply using the same protocol
-  std::cout << "SEND: " << "world" << std::endl;
+  std::cout << "SEND: "
+            << "world" << std::endl;
   return write_request(connfd, "world");
 }
 

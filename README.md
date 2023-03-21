@@ -29,3 +29,5 @@ Chapter 6:
 Misc:
 * Create object-oriented wrapper for C sockets
 * CLI args for port number/other init options
+* Use protocol buffers for serde
+* Use boost:asio
