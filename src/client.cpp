@@ -27,10 +27,9 @@ void run_client() {
   }
 
   for (int i = 0; i < 3; ++i) {
-    if(errno_t err = query(fd, "ouch!")){
+    if (errno_t err = query(fd, "ouch!")) {
       break;
     }
-    
   }
 
   close(fd);
